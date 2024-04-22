@@ -1,44 +1,33 @@
-#refrence from https://www.accel.ai/anthology/2022/8/17/svd-algorithm-tutorial-in-python
+import matplotlib.pyplot as plt
 import numpy as np
-from scipy.linalg import svd
 
-#V tansposed matrix
-def calcVT(M):
-    # Compute VT matrix
-    newM = np.dot(M.T, M)
-    eigenvalues, eigenvectors = np.linalg.eig(newM)
-    idx = np.argsort(eigenvalues)[::-1]
-    V = eigenvectors[:, idx].T
+def plot_matrix(matrix):
+    plt.imshow(matrix, cmap='binary', interpolation='nearest')
+    plt.show()
 
-    return V
+# Example matrix
+matrix = np.array([[1, 1, 1, 0, 0, 0, 0, 1, 1, 1],
+ [1, 1, 1, 1, 0, 0, 1, 1, 1, 1],
+ [1, 1, 1, 1, 0, 0, 1, 1, 1, 1],
+ [0, 1, 1, 1, 1, 1, 1, 1, 1, 0],
+ [0, 1, 1, 1, 1, 1, 1, 1, 1, 0],
+ [0, 1, 1, 0, 1, 1, 0, 1, 1, 0],
+ [0, 1, 1, 0, 1, 1, 0, 1, 1, 0],
+ [1, 1, 1, 0, 0, 0, 0, 1, 1, 1],
+ [1, 1, 1, 1, 0, 0, 1, 1, 1, 1],
+ [1, 1, 1, 1, 0, 0, 1, 1, 1, 1]])
 
-def calcU(M):
-    # Compute U matrix
-    newM = np.dot(M, M.T)
-    eigenvalues, eigenvectors = np.linalg.eig(newM)
-    ncols = np.argsort(eigenvalues)[::-1] 
-    U = eigenvectors[:, ncols]
-
-    return U
-
-#Function that calculates Eigenvalues corresponding to the Sigma Matrix
-def calcD(M):
-    if np.size(np.dot(M, M.T)) > np.size(np.dot(M.T, M)):
-        newM = np.dot(M.T, M)
-    else:
-        newM = np.dot(M, M.T)
-
-    eigenvalues = np.linalg.eig(newM)
-    eigenvalues = np.sqrt(eigenvalues[0]) 
-    return np.sort(eigenvalues)[::-1]
+for k in [1, 2, 3, 4]:
+    # Perform SVD
+    U, s, Vt = np.linalg.svd(matrix, full_matrices=False)
 
 
+    U_k = U[:, :k]
+    s_k = np.diag(s[:k])
+    Vt_k = Vt[:k, :]
 
-A = np.array([[3,4,3],[1,1,-5]])
-VT = calcVT(A)
-U = calcU(A)
-S = calcD(A)
+    # Reconstruct the compressed matrix
+    compressed_matrix = np.dot(U_k, np.dot(s_k, Vt_k))
 
-print (VT, "\n")
-print(U,"\n")
-print(S)
+    print("Compressed matrix with k = {k}:")
+    plot_matrix(compressed_matrix)

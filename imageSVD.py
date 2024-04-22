@@ -16,6 +16,11 @@ def svd_compress(image, k):
 image = cv2.imread('Ann_Arbor_sunset_2018.jpg', cv2.IMREAD_GRAYSCALE)
 
 image_array = np.array(image)
-compression_level = 100
+compression_level = 2923
 compressed_image = svd_compress(image_array, compression_level)
 cv2.imwrite('compressed_image.jpg', compressed_image) 
+
+
+
+
+
